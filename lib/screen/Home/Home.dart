@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shopp/config/colour.dart';
 import 'package:shopp/screen/Home/EmptyCart.dart';
 import 'package:shopp/screen/Home/Search.dart';
@@ -39,11 +40,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     print('Controller and drawerSlideAnimation initialized');
   }
 
-  void _handleDrawerClose() {
-    _controller.forward().then((_) {
-      Navigator.pop(context); // Thực sự đóng Drawer
-      _controller.reverse();  // Reset lại animation controller
-    });
+   void _handleDrawerClose()  {
+     _controller.forward().then((_) {
+      Navigator.pop(context);
+       _controller.reverse();
+     });
+    
   }
 
   @override
@@ -107,7 +109,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 _handleDrawerClose();
               }),
               _buildDrawer(Icons.shopping_bag, 'Sale', () {
-                _navigateTo('Sale');
+                context.go('/sale');
               }),
               _buildDrawer(Icons.category, 'Mini', () {
                 _navigateTo('Mini');
@@ -158,7 +160,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   margin: EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Colors.pink[50],
                     borderRadius: BorderRadius.circular(200),
                   ),
                   child: IgnorePointer(
@@ -176,19 +178,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
               ),
               Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(16.0),
-                color: Colors.purple[100],
+                padding: EdgeInsets.all(10),
                 child: Column(
                   children: [
                     Text(
                       '15% OFF YOUR FIRST APP ORDER WITH CODE: HELLO15',
-                      style: TextStyle(fontSize: 16.0, color: Colors.white),
+                      style: TextStyle(fontSize: 13.0, color: Colors.pink[600]),
                       textAlign: TextAlign.center,
                     ),
                     Text(
                       'FREE UK DELIVERY ON ORDERS £35+',
-                      style: TextStyle(fontSize: 16.0, color: Colors.white),
+                      style: TextStyle(fontSize: 13.0, color: Colors.pink[600]),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -264,7 +264,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             borderRadius: BorderRadius.circular(8.0),
             side: BorderSide(color: Colors.grey),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding:const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         ),
         child: Text(text),
       ),
