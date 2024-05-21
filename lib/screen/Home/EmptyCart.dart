@@ -6,7 +6,7 @@ class EmptyCart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.pink[50],
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -40,15 +40,15 @@ class EmptyCart extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
-                "You have no items in your cart at the moment",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black12,
-                  fontSize: 16,
-                ),
-              ),
+              // SizedBox(height: 20),
+              // Text(
+              //   "You have no items in your cart at the moment",
+              //   textAlign: TextAlign.center,
+              //   style: TextStyle(
+              //     color: Colors.red,
+              //     fontSize: 16,
+              //   ),
+              // ),
               SizedBox(height: 20),
               ElevatedButton(
                   onPressed: () {

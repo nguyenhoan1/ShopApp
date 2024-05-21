@@ -45,7 +45,7 @@ class SearchPage extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                       borderSide: BorderSide.none),
                   filled: true,
-                  fillColor: Colors.grey[200],
+                  fillColor: Colors.pink[50],
                 ),
               ),
               Divider(),
