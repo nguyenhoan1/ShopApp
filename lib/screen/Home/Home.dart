@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shopp/Service/product_service.dart';
 import 'package:shopp/config/colour.dart';
+import 'package:shopp/model/product.dart';
 import 'package:shopp/screen/Home/EmptyCart.dart';
 import 'package:shopp/screen/Home/Search.dart';
 
@@ -11,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); // Đảm bảo khai báo biến này
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late AnimationController _controller;
   late Animation<Offset> _drawerSlideAnimation;
 
@@ -40,8 +42,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     print('Controller and drawerSlideAnimation initialized');
   }
 
-   void _handleDrawerClose()  {
-     _controller.forward().then((_) {
+  void _handleDrawerClose() {
+    _controller.forward().then((_) {
       Navigator.pop(context);
        _controller.reverse();
      });
@@ -66,7 +68,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     print('Building widget tree');
     return Scaffold(
-      key: _scaffoldKey, // Sử dụng _scaffoldKey trong Scaffold
+      key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Palette.logo,
@@ -103,151 +105,170 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         position: _drawerSlideAnimation,
         child: Drawer(
           child: ListView(
-            padding: EdgeInsets.all(50),
+            padding: const EdgeInsets.all(50),
             children: <Widget>[
               _buildDrawer(Icons.home, 'Home', () {
                 _handleDrawerClose();
               }),
               _buildDrawer(Icons.shopping_bag, 'Sale', () {
-                context.go('/sale');
+                // Navigate to Sale
               }),
               _buildDrawer(Icons.category, 'Mini', () {
-                _navigateTo('Mini');
+                // Navigate to Mini
               }),
               _buildDrawer(Icons.health_and_safety, 'Skin Concerns', () {
-                _navigateTo('Skin Concerns');
+                // Navigate to Skin Concerns
               }),
               _buildDrawer(Icons.shopping_cart, 'Cart', () {
-                _navigateTo('Cart');
+                // Navigate to Cart
               }),
               _buildDrawer(Icons.receipt, 'Orders', () {
-                _navigateTo('Orders');
+                // Navigate to Orders
               }),
               _buildDrawer(Icons.account_circle, 'Account', () {
-                _navigateTo('Account');
+                // Navigate to Account
               }),
               _buildDrawer(Icons.favorite, 'Wishlist', () {
-                _navigateTo('Wishlist');
+                // Navigate to Wishlist
               }),
               _buildDrawer(Icons.notifications, 'Notifications', () {
-                _navigateTo('Notifications');
+                // Navigate to Notifications
               }),
               _buildDrawer(Icons.article, 'Blog', () {
-                _navigateTo('Blog');
+                // Navigate to Blog
               }),
               _buildDrawer(Icons.attach_money, 'BY', () {
-                _navigateTo('BY');
+                // Navigate to BY
               }),
             ],
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SearchPage()),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    color: Colors.pink[50],
-                    borderRadius: BorderRadius.circular(200),
-                  ),
-                  child: IgnorePointer(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search Products',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
+      body: FutureBuilder<List<ProductCategory>>(
+        future: fetchProductCategories(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No categories found'));
+          } else {
+            final productCategories = snapshot.data!;
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SearchPage()),
+                        );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.pink[50],
+                          borderRadius: BorderRadius.circular(200),
                         ),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey),
-                        border: InputBorder.none,
+                        child: const IgnorePointer(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Search Products',
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                              ),
+                              prefixIcon: Icon(Icons.search, color: Colors.grey),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Text(
-                      '15% OFF YOUR FIRST APP ORDER WITH CODE: HELLO15',
-                      style: TextStyle(fontSize: 13.0, color: Colors.pink[600]),
-                      textAlign: TextAlign.center,
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Text(
+                            '15% OFF YOUR FIRST APP ORDER WITH CODE: HELLO15',
+                            style: TextStyle(fontSize: 13.0, color: Colors.pink[600]),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            'FREE UK DELIVERY ON ORDERS £35+',
+                            style: TextStyle(fontSize: 13.0, color: Colors.pink[600]),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      'FREE UK DELIVERY ON ORDERS £35+',
-                      style: TextStyle(fontSize: 13.0, color: Colors.pink[600]),
-                      textAlign: TextAlign.center,
+                    Image.asset('assets/images/cartoon.jpg'),
+                    Center(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: productCategories.map((category) {
+                            return _buildCategoryButton(category);
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                    Image.asset('assets/images/cartoon2.jpg'),
+                    Center(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildCategory('lips'),
+                            _buildCategory('eyes'),
+                            _buildCategory('face'),
+                            _buildCategory('cheeks'),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Image.asset('assets/images/cartoon.jpg'),
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildCategoryButton('cleansers'),
-                      _buildCategoryButton('toners'),
-                      _buildCategoryButton('serums'),
-                      _buildCategoryButton('moisturizers'),
-                      _buildCategoryButton('sunscreens'),
-                      _buildCategoryButton('masks'),
-                    ],
-                  ),
-                ),
-              ),
-              Image.asset('assets/images/cartoon2.jpg'),
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildCategory('lips'),
-                      _buildCategory('eyes'),
-                      _buildCategory('face'),
-                      _buildCategory('cheeks'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+            );
+          }
+        },
       ),
     );
   }
 
-  Widget _buildCategoryButton(String text) {
+  Widget _buildCategoryButton(ProductCategory category) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductPage(
+                title: category.title,
+                products: category.products,
+              ),
+            ),
+          );
+        },
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.black,
           backgroundColor: Palette.cartoon,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
-            side: BorderSide(color: Colors.grey),
+            side: const BorderSide(color: Colors.grey),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         ),
-        child: Text(text),
+        child: Text(category.title),
       ),
     );
   }
@@ -262,9 +283,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           backgroundColor: Palette.cartoon2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
-            side: BorderSide(color: Colors.grey),
+            side: const BorderSide(color: Colors.grey),
           ),
-          padding:const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         ),
         child: Text(text),
       ),
@@ -276,9 +297,129 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       leading: Icon(icon, color: Colors.pinkAccent),
       title: Text(
         title,
-        style: TextStyle(color: Colors.pinkAccent),
+        style: const TextStyle(color: Colors.pinkAccent),
       ),
       onTap: onTap,
+    );
+  }
+}
+
+class ProductPage extends StatelessWidget {
+  final String title;
+  final List<Product> products;
+
+  ProductPage({required this.title, required this.products});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title, style: TextStyle(color: Colors.pink)),
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.pink),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    // TODO: Add sort functionality
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.pink, backgroundColor: Colors.pink[50],
+                  ),
+                  child: Text('SORT'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // TODO: Add filter functionality
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.pink, backgroundColor: Colors.pink[50],
+                  ),
+                  child: Text('FILTER'),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.all(8.0),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                return _buildProductCard(products[index]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductCard(Product product) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      elevation: 4.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+                image: DecorationImage(
+                  image: AssetImage(product.imageUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.name,
+                  style: const TextStyle(fontSize: 14.0),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  '\$${product.price}',
+                  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    icon: Icon(Icons.favorite_border),
+                    onPressed: () {
+                      // TODO: Add to favorites functionality
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

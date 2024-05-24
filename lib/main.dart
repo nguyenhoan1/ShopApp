@@ -1,12 +1,17 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:shopp/Locator/locator.dart';
+import 'package:shopp/Service/Auth_service.dart';
 import 'package:shopp/config/colour.dart';
 import 'package:shopp/config/router.dart';
 import 'package:shopp/screen/Login/login_screen.dart';
 import 'package:shopp/screen/Signup/signup_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-void main() {
+void main() async  {
+ WidgetsFlutterBinding.ensureInitialized();
+  await setupLocator();
+  locator.registerSingleton<AuthService>(AuthService());
   runApp(const MyApp());
 }
 

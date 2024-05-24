@@ -1,10 +1,14 @@
-
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shopp/main.dart';
-import 'package:shopp/screen/Drawer/Sale.dart';
+import 'package:shopp/screen/Drawer/Account.dart';
+import 'package:shopp/screen/Drawer/Cart.dart';
+import 'package:shopp/screen/Drawer/Mini.dart' as mini;
+import 'package:shopp/screen/Drawer/Order.dart';
+import 'package:shopp/screen/Drawer/Sale.dart' as sale;
+import 'package:shopp/screen/Drawer/SkinConcerns.dart';
 import 'package:shopp/screen/Home/Home.dart';
 
-// Định nghĩa GoRouter
 final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
@@ -17,7 +21,28 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/sale',
-      builder: (context, state) => SalePage(),
+      builder: (context, state) => sale.SalePage(listitems: sale.listitems),
     ),
+    GoRoute(
+      path: '/mini',
+      builder: (context, state) => mini.Minipage(listitems: mini.listitems),
+    ),
+    GoRoute(
+      path: '/skin-concerns',
+      builder: (context, state) => SkinConcernsPage(),
+    ),
+     GoRoute(
+      path: '/cart',
+      builder: (context, state) => CartPage(),
+    ),
+    GoRoute(
+      path: '/orders',
+      builder: (context, state) => OrderPage(),
+    ),
+    GoRoute(
+      path: '/account',
+      builder: (context, state) => AccountScreen(),
+    ),
+    
   ],
 );

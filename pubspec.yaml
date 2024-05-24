@@ -16,6 +16,9 @@ dependencies:
   flutter_svg: ^2.0.10+1
   font_awesome_flutter: ^10.7.0
   go_router: ^5.0.0
+  http: ^1.2.1
+  shared_preferences: ^2.2.3
+  get_it: ^7.7.0
 
 dev_dependencies:
   flutter_test:
@@ -36,5 +39,6 @@ flutter:
     - assets/images/Background.jpg
     - assets/images/hihi.jpg
     - assets/images/main.jpg
+    - assets/images/Ana.jpg
     - assets/images/
     - assets/icons/

@@ -1,57 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:shopp/config/ingredient.dart';
 import 'package:shopp/model/listItems.dart';
-import 'package:shopp/screen/Home/EmptyCart.dart'; 
+import 'package:shopp/screen/Home/EmptyCart.dart'; // Import CustomDrawer
 
-class SalePage extends StatefulWidget {
+class Minipage extends StatefulWidget {
   final List<ListItem> listitems;
-  const SalePage({super.key, required this.listitems});
+  const Minipage({super.key, required this.listitems});
   @override
   // ignore: library_private_types_in_public_api
-  _SalePageState createState() => _SalePageState();
+  _MinipageState createState() => _MinipageState();
 }
 
 final List<ListItem> listitems = [
   ListItem(
-    name: '[Anua] Heartleaf 77% Soothing Toner 250ml',
+    name: '[Im From] Honey Mask 30g',
     price: 39.00,
     originalPrice: 44.00,
-    imageURL: 'assets/images/Ana.jpg',
+    imageURL: 'assets/images/Honey Mask Mini.jpg',
   ),
   ListItem(
-    name: '[Anua] Heartleaf Pore Control Cleansing Oil 200ml',
+    name: '[Im From] Honey Mask 30g',
     price: 35.00,
     originalPrice: 44.00,
-    imageURL: 'assets/images/Ana.jpg',
+    imageURL: 'assets/images/Honey Mask Mini.jpg',
   ),
   ListItem(
-    name: '[Anua] Heartleaf 77% Soothing Toner 250ml',
+    name: '[Im From] Honey Mask 30g',
     price: 28.00,
     originalPrice: 33.00,
-    imageURL: 'assets/images/Ana.jpg',
+    imageURL: 'assets/images/Honey Mask Mini.jpg',
   ),
   ListItem(
-    name: '[AXIS-Y] Heartleaf 77% Soothing Toner 100ml',
+    name: '[Im From] Honey Mask 30g',
     price: 20.00,
     originalPrice: 25.00,
-    imageURL: 'assets/images/Ana.jpg',
+    imageURL: 'assets/images/Honey Mask Mini.jpg',
   ),
   ListItem(
-    name: '[AXIS-Y] Heartleaf 77% Soothing Toner 100ml',
+    name: '[Im From] Honey Mask 30g',
     price: 20.00,
     originalPrice: 25.00,
-    imageURL: 'assets/images/Ana.jpg',
+    imageURL: 'assets/images/Honey Mask Mini.jpg',
   ),
    ListItem(
-    name: '[AXIS-Y] Heartleaf 77% Soothing Toner 100ml',
+    name: '[Im From] Honey Mask 30g',
     price: 20.00,
     originalPrice: 25.00,
-    imageURL: 'assets/images/Ana.jpg',
+    imageURL: 'assets/images/Honey Mask Mini.jpg',
   ),
   
 ];
 
-class _SalePageState extends State<SalePage> with SingleTickerProviderStateMixin {
+class _MinipageState extends State<Minipage> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late AnimationController _controller;
   late Animation<Offset> _drawerSlideAnimation;
@@ -186,7 +186,7 @@ class _SalePageState extends State<SalePage> with SingleTickerProviderStateMixin
     return Scaffold(
       key: _scaffoldKey,
       appBar: CustomAppBar(
-        titleText: 'SALE',
+        titleText: 'MINI',
         onMenuPressed: () {
           _scaffoldKey.currentState?.openDrawer();
         },
@@ -198,11 +198,14 @@ class _SalePageState extends State<SalePage> with SingleTickerProviderStateMixin
         },
         showStoreButton: true,
         showShoppingBasketButton: true,
+
       ),
+
       drawer: CustomDrawer(
         drawerSlideAnimation: _drawerSlideAnimation,
         onClose: _handleDrawerClose,
       ),
+
       body: _buildBody(),
     );
   }
